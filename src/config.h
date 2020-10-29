@@ -9,7 +9,7 @@
 #define MARCO_MINIMAL_GTP_BOARD_SIZE (2)
 
 // The maximal of board size.
-#define MARCO_BOARD_SIZE (6)
+#define MARCO_BOARD_SIZE (8)
 
 // Avoid crazy komi.
 #define MARCO_MAXIMAL_KOMI (150.f)

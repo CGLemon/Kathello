@@ -211,3 +211,7 @@ Engine::Response Engine::random_playmove() {
     return m_state->vertex_to_string(move);
 }
 
+const GameState& Engine::get_state() const {
+    return *m_state;
+}
+
