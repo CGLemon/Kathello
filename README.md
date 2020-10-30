@@ -9,7 +9,7 @@ CUDA (可選)
 cuDNN (可選)
 
 # 特色
-Kathello 支持動態貼目，和預測最終勝負結果。
+Kathello 支援動態貼目，和預測最終勝負結果。
 
 # 在 Linux ( Ubuntu ) 上編譯
 
@@ -40,7 +40,7 @@ https://drive.google.com/drive/folders/1hHGqRVBMOF1KkcA80sFWNUciDjsoPbaf?usp=sha
 
 
 # 啟動 Kathello 
-./Kathello -w <weights-file> -p <integral / playouts number> -t <integral / threads>
+    ./Kathello -w <weights-file> -p <integral / playouts number> -t <integral / threads>
 
 # 簡單的 GTP 的介面
 Kathello 實做了一些常用的 gtp 指令
