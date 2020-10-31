@@ -1,5 +1,5 @@
 # Kathello
-基於 AlphaZero 的 othello 引擎
+基於 AlphaZero 的 Othello 引擎
 
 # 需求
 C++14
@@ -7,6 +7,12 @@ C++14
 CUDA (可選)
 
 cuDNN (可選)
+
+# 硬體
+1. 一顆普通的　CPU ，多核心會更好
+2. 一塊 NVIDIA 的 GPU （沒有沒可，有會更好）
+3. 顯示器、鍵盤
+
 
 # 特色
 Kathello 支援動態貼目，和預測最終勝負結果。
@@ -30,12 +36,15 @@ CPU 線性代數庫 （加速 CPU 端神經網路運算，需要下載對應的�
 
 GPU 加速 （加速 GPU 端神經網路運算，cuDNN可選）
 
+在編譯以前，請先確定你有 NVIDIA 的顯卡， 並到 NVIDIA 官網下載 CUDA 。
+
     $ cmake .. -DGPU_BACKEND=CUDA
     $ cmake .. -DUSE_CUDNN=1
 
 
 # 測試的權重
 訓練的權重將放在雲端硬碟上，歡迎下載並測試 kathello
+
 https://drive.google.com/drive/folders/1hHGqRVBMOF1KkcA80sFWNUciDjsoPbaf?usp=sharing
 
 
@@ -44,7 +53,7 @@ https://drive.google.com/drive/folders/1hHGqRVBMOF1KkcA80sFWNUciDjsoPbaf?usp=sha
 
 # 簡單的 GTP 的介面
 Kathello 實做了一些常用的 gtp 指令
-使用 play 和 genmove 的指令就可以在文字介面下和電互相對決
+使用 play 和 genmove 的指令就可以在文字介面下和電腦相互對決
 
 gtp 指令全集： https://www.gnu.org/software/gnugo/gnugo_19.html
 
