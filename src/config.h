@@ -31,7 +31,7 @@ static constexpr auto DEFAULT_KOMI = MARCO_KOMI;
 
 static constexpr auto DEFAULT_BOARDSIZE = BOARD_SIZE;
 
-const std::string PROGRAM = "TemplateGo";
+const std::string PROGRAM = "Kathello";
 
 const std::string VERSION = "Alpha"; 
 
