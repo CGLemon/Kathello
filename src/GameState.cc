@@ -16,6 +16,8 @@ void GameState::init_game(int size, float komi) {
     m_game_history.clear();
     m_game_history.emplace_back(std::make_shared<Board>(board));
 
+    m_kohash_history.clear();
+    m_kohash_history.emplace_back(board.get_ko_hash());
 
     m_resigned = Board::INVAL;
 }
@@ -23,11 +25,17 @@ void GameState::init_game(int size, float komi) {
 bool GameState::play_move(const int vtx, const int color) {
 
     if (isGameOver()) {
-        return false;
+      return false;
     }
 
     if (!board.is_legal(vtx, color)) {
         return false;
+    }
+
+    if (option<bool>("pre_block_superko")) {
+        if (board.is_superko_move(vtx, color, m_kohash_history)) {
+            return false;
+        }
     }
 
     if (vtx == Board::RESIGN) {
@@ -44,6 +52,9 @@ bool GameState::play_move(const int vtx, const int color) {
     m_game_history.emplace_back(std::make_shared<Board>(board));
     m_game_history.resize(movenum + 1);
 
+    m_kohash_history.emplace_back(board.get_ko_hash());
+    m_kohash_history.resize(movenum + 1);
+
     return true;
 }
 
@@ -53,6 +64,7 @@ bool GameState::undo_move() {
     if (movenum > 0) {
         board = *m_game_history[movenum - 1];
         m_game_history.resize(movenum);
+        m_kohash_history.resize(movenum);
         return true;
     }
     return false;
@@ -159,6 +171,7 @@ std::string GameState::display_to_string(const size_t strip) const {
     out << std::endl;
     board.board_stream(out, board.get_last_move());
     board.info_stream(out);
+    board.prisoners_stream(out);
     board.hash_stream(out);
     m_time_control.time_stream(out);
 
@@ -185,15 +198,27 @@ std::string GameState::vertex_to_string(int vertex) const {
     return board.vertex_to_string(vertex);
 }
 
-float GameState::final_score(float addition_komi) const {
+void GameState::set_rule(Board::rule_t rule) {
+    m_rule = rule;
+}
 
-    float score = board.area_score(board.get_komi()) - addition_komi;
+float GameState::final_score(Board::rule_t rule, float addition_komi) const {
+
+    float score = board.area_score(board.get_komi(), rule) - addition_komi;
     float error = 1e-2;
     if (score < error && score > (-error)) {
         score = 0.0f;
     }
 
     return score;
+}
+
+float GameState::final_score(float addition_komi) const {
+    return final_score(m_rule, addition_komi);
+}
+
+Board::rule_t GameState::get_rule() const {
+    return m_rule;
 }
 
 int GameState::get_resigned() const {
@@ -274,11 +299,11 @@ const std::shared_ptr<Board> GameState::get_past_board(int moves_ago) const {
 
 bool GameState::superko() const {
 
-    // auto first = std::crbegin(m_kohash_history);
-    // auto last = std::crend(m_kohash_history);
-    // auto res = std::find(++first, last, board.get_ko_hash());
+    auto first = std::crbegin(m_kohash_history);
+    auto last = std::crend(m_kohash_history);
+    auto res = std::find(++first, last, board.get_ko_hash());
 
-    return false;
+    return res != last;
 }
 
 void GameState::reset_time() {
@@ -305,9 +330,10 @@ void GameState::set_time_left(int color, int main_time, int byo_time, int stones
 }
 
 bool GameState::is_legal(const int vtx,
-                         const int color) const {
+                         const int color,
+                         Board::avoid_t avoid) const {
 
-    return board.is_legal(vtx, color);
+    return board.is_legal(vtx, color, avoid);
 }
 
 int GameState::get_movenum() const {
