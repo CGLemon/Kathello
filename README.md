@@ -16,7 +16,7 @@ Kathello 支援動態貼目，和預測最終勝負結果。
 
 1. 支援 C++14 的編譯器
 
-2. cmake，版本大於 3.9
+2. cmake，版本高於 3.9
 
 3. CUDA (可選)
 
@@ -70,6 +70,6 @@ gtp 指令全集： https://www.gnu.org/software/gnugo/gnugo_19.html
 
 # TODO
 
-- [ ] 完 GTP 介面
+- [ ] 完善 GTP 介面
 - [ ] 實做 alpha-beta tree ，增強在終盤的強度
 - [ ] 自帶簡單的圖形介面
