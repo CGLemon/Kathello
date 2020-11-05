@@ -162,12 +162,6 @@ ArgsParser::ArgsParser(int argc, char** argv) {
         }
     }
 
-    if (const auto res = parser.find_next("--boardsize")) {
-        if (is_parameter(res->str)) {
-            set_option("boardsize", res->get<int>());
-        }
-    }
-
     if (const auto res = parser.find_next(List{"--batchsize", "-b"})) {
         if (is_parameter(res->str)) {
             set_option("batchsize", res->get<int>());
