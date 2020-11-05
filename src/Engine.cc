@@ -1,7 +1,9 @@
 #include "Engine.h"
 #include "Utils.h"
 #include "Model.h"
+
 #include <cassert>
+#include <chrono>
 
 void Engine::initialize() {
     while (m_states.size() < (unsigned)option<int>("num_games")) {

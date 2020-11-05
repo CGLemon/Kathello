@@ -83,7 +83,7 @@ void forward(std::shared_ptr<Model::NNweights> m_weights,
         batchnorm::Forward(tower_channels, conv_out,
                            tower_ptr->bn_2.means,
                            tower_ptr->bn_2.stddevs,
-                           nullptr, false);
+                           nullptr, false);   
 
         const size_t se_size = 4 * tower_channels;
         se_unit::Forward(tower_channels, se_size,

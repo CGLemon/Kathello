@@ -193,7 +193,6 @@ int Search::uct_search() {
     }
 
     return select_move;
-
 }
 
 void Search::prepare_uct_search() {

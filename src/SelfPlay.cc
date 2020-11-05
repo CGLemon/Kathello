@@ -114,8 +114,8 @@ void SelfPlay::normal_selfplay() {
 
 void SelfPlay::from_scratch() {
     auto rng = Random<random_t::XoroShiro128Plus>::get_Rng();
-    // Moves 1~6 stones
-    const int moves = rng.randfix<6>() + 1;
+    // Moves 1~10 stones
+    const int moves = rng.randfix<10>() + 1;
     for (auto m = 0; m < moves; ++m) {
         m_selfplay_engine->random_playmove();
     }

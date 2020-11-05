@@ -109,7 +109,7 @@ void UCTNode::link_nn_output(GameState &state,
 
     const size_t intersections = state.get_intersections();
 
-    // Put network evaluation into node.
+    // Put network evaluation into the node.
     const auto winrate = Model::get_winrate(state, raw_netlist);
     const auto stm_eval = winrate;
     if (color == Board::WHITE) {
