@@ -754,7 +754,7 @@ Train_helper::train_batch(std::vector<TrainDataBuffer> &buffer) {
     torch::Tensor batch_scorebelief = torch::zeros({batch_size, scorebelief_size});
     torch::Tensor batch_finalscore = torch::zeros({batch_size, finalscore_size});
     torch::Tensor batch_ownership = torch::zeros({batch_size, ownership_size});
-    torch::Tensor current_komi = torch::zeros({batch_size, 1});
+    torch::Tensor current_komi = torch::zeros({batch_size, 1}); // Calculate the forward winrate.
     torch::Tensor batch_winrate = torch::zeros({batch_size, winrate_size});
   
     auto batch_policy_ptr = (float*)batch_policy.data_ptr();
@@ -881,12 +881,7 @@ Train_helper::train_batch(std::vector<TrainDataBuffer> &buffer) {
                               torch::mean(-torch::sum(torch::mul(torch::log((1 - ownership)/2 + 0.0001f), 1 - batch_ownership), // unreduce
                                   1), 0);
 
-    auto winrate_loss = torch::mse_loss(misc2winrate(winrate_misc, current_komi, (float)intersections), batch_winrate); // +
-                             // MSE(misc2winrate(winrate_misc, batch_finalscore + 1.0f), -1.0f) +
-                             // MSE(misc2winrate(winrate_misc, batch_finalscore - 1.0f),  1.0f);
-
-    // auto winrate_loss = torch::mse_loss(misc2winrate(winrate_misc, batch_finalscore - batch_winrate), batch_winrate);
-
+    auto winrate_loss = torch::mse_loss(misc2winrate(winrate_misc, current_komi, (float)intersections), batch_winrate);
 
     auto loss = 
         1.00f * policy_loss +
