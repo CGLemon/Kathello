@@ -113,10 +113,6 @@ bool Network::probe_cache(const GameState *const state,
 
     const bool success = m_cache.lookup(state->board.get_hash(), result);
 
-    if (success) {
-        // result = Model::get_result_form_cache(result);
-    }
-
   // If we are not generating a self-play game, try to find
   // symmetries if we are in the early opening.
   /*

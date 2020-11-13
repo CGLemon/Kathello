@@ -4,6 +4,7 @@
 #include <memory>
 #include <functional>
 
+#include "EndGameSearch.h"
 #include "SearchParameters.h"
 #include "ThreadPool.h"
 #include "Search.h"
@@ -41,6 +42,46 @@ public:
         m_nn_outout->final_score = board_score + komi;
     
         const auto ownership = state.board.get_ownership();
+        const auto o_size = ownership.size();
+        m_nn_outout->ownership = std::array<float, NUM_INTERSECTIONS>{};
+        m_nn_outout->ownership.fill(0.0f);
+
+        for (auto idx = size_t{0}; idx < o_size; ++idx) {
+            const auto owner =  ownership[idx];
+            if (owner == Board::BLACK) {
+                m_nn_outout->ownership[idx] = 1.0f;
+            } else if (owner == Board::WHITE) {
+                m_nn_outout->ownership[idx] = -1.0f;
+            }
+        }
+    }
+
+    void from_endsearch(GameState &state,
+                        EndGameSearch &endsearch,
+                        EndGameCache &cache) {
+
+        m_nn_outout = std::make_shared<NNOutput>();
+
+        auto result = EndGameSearch::Result{};
+        const auto success = cache.prob_cache(&state, result);
+        if (!success) {
+            result = endsearch.search();
+            cache.insert_cache(&state, result);
+        }
+
+        const auto board_score = result.score_with_komi;
+
+        if (board_score > 0.0f) {
+            m_nn_outout->eval = 1.0f;
+        } else if (board_score < 0.0f) {
+            m_nn_outout->eval = 0.0f;
+        } else {
+            m_nn_outout->eval = 0.5f;
+        }
+
+        m_nn_outout->final_score = result.score;
+    
+        const auto ownership = result.ownership;
         const auto o_size = ownership.size();
         m_nn_outout->ownership = std::array<float, NUM_INTERSECTIONS>{};
         m_nn_outout->ownership.fill(0.0f);
@@ -109,5 +150,7 @@ private:
     std::atomic<int> m_playouts;
     Timer m_timer;
     std::shared_ptr<SearchParameters> m_parameters{nullptr};
+
+    EndGameCache m_endgame_cache;
 };
 #endif

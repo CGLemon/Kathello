@@ -90,6 +90,7 @@ void init_options_map() {
     options_map["score_utility_div"] << Utils::Option::setoption(3.5f);
     options_map["ponder"] << Utils::Option::setoption(false);
     options_map["random_min_visits"] << Utils::Option::setoption(1);
+    options_map["endgame_search"] << Utils::Option::setoption(0, 32, 0);
 
     // time control paramters
     options_map["maintime"] << Utils::Option::setoption(3600);
@@ -181,6 +182,12 @@ ArgsParser::ArgsParser(int argc, char** argv) {
             } else {
                 Utils::auto_printf("syntax not understood : %s\n", res->get<const char*>());
             }
+        }
+    }
+
+    if (const auto res = parser.find_next("--endgame_move")) {
+        if (is_parameter(res->str)) {
+            set_option("endgame_search", res->get<int>());
         }
     }
 

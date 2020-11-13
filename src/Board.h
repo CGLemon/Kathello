@@ -101,6 +101,7 @@ public:
 
     int get_numblacks() const;
     int get_numwhites() const;
+    int get_numempty() const;
 
     std::vector<int> get_ownership() const;
 

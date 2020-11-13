@@ -22,6 +22,7 @@ Search::Search(GameState &state, Evaluation &evaluation, Trainer &trainer)
     SearchPool.initialize(threads);
     m_threadGroup = std::make_unique<ThreadGroup<void>>(SearchPool);
     m_parameters = std::make_shared<SearchParameters>();
+    m_endgame_cache.resize(option<int>("playouts"));
 }
 
 
@@ -140,6 +141,7 @@ int Search::uct_search() {
     bool keep_running = true;
     bool need_resign = false;
     prepare_uct_search();
+    m_endgame_cache.clear();
     updata_root(m_rootnode);
 
     auto_printf("Start searching...\n");
@@ -288,9 +290,17 @@ void Search::play_simulation(GameState &currstate, UCTNode *const node,
     node->increment_threads();
 
     if (node->expandable()) {
+
+        auto endsearch = EndGameSearch(currstate, option<int>("endgame_search"));
+
         if (currstate.get_passes() >= 2) {
             search_result.from_score(currstate);
             node->from_nn_output(search_result.nn_output());
+        } else if (endsearch.valid()) {
+             search_result.from_endsearch(currstate,
+                                          endsearch,
+                                          m_endgame_cache);
+             node->from_nn_output(search_result.nn_output());
         } else {
             std::shared_ptr<NNOutput> nn_output;
             const bool had_children = node->has_children();

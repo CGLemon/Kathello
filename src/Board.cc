@@ -665,5 +665,20 @@ int Board::get_numwhites() const {
     return res;
 }
 
+int Board::get_numempty() const {
 
+    int res = 0;
 
+    for (int y = 0; y < m_boardsize; ++y) {
+        for (int x = 0; x < m_boardsize; ++x) {
+            const auto vtx = get_vertex(x, y);
+            const auto color = m_state[vtx];
+            assert(color != Board::INVAL);
+            if (color == Board::EMPTY) {
+                res++;
+            }
+        }
+    }
+
+    return res;
+}
